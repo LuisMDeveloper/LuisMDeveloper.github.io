@@ -1,0 +1,32 @@
+name: GatsbyJS Deploy
+
+on:
+  push:
+    branches: [ dev ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: git config --global user.email "luis.manuel.ramirez.91@gmail.com"
+    - run: git config --global user.name "Luis Manuel Ramirez Vargas"
+    - run: npm ci
+    - run: npm install -g gatsby-cli
+    #- run: npm run build --if-present
+    #- run: npm test
+    - run: npm run deploy
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        GH_USER: "LuisMDeveloper"
+        GH_REPO: "luismdeveloper.github.io"
